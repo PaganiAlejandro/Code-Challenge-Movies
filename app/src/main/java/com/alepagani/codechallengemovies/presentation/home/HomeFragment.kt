@@ -38,8 +38,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
 
     private fun initUI() {
         adapterMovies = MovieAdapter(emptyList(), this@HomeFragment)
+        adapterMoviesLiked = MovieLikedAdapter(emptyList(), this@HomeFragment)
         binding.rvMovies.adapter = adapterMovies
-        
+        binding.rvMoviesLiked.adapter = adapterMoviesLiked
+
         viewLifecycleOwner.lifecycleScope.launch { 
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.moviesStateFlow.collect { result ->
@@ -67,34 +69,30 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
                         }
                         is ResultResource.Loading -> {}
                         is ResultResource.Success -> {
-                            if (result.data.size > 0) binding.movieLikedContainer.visibility = View.VISIBLE else binding.movieLikedContainer.visibility = View.GONE
+                            if (result.data.size > 0){
+                                Log.e("ALEPASO", "Movies liked ")
+                                binding.movieLikedContainer.visibility = View.VISIBLE
+                            } else {
+                                Log.e("ALEPASO", "Movies liked error ")
+                                binding.movieLikedContainer.visibility = View.GONE
+                            }
                             adapterMoviesLiked.updateList(result.data)
                         }
                     }
                 }
             }
         }
+        Log.e("ALEPASO", "paaaaaaaassssooooooooooooo ")
+        viewModel.getMovieLikedList()
     }
 
     override fun onMovieClick(movie: Movie) {
-        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(
-            movie.poster_path,
-            movie.title,
-            movie.release_date,
-            movie.overview,
-            movie.backdrop_path
-        )
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie)
         findNavController().navigate(action)
     }
 
     override fun onMovieLikedClick(movie: Movie) {
-        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(
-            movie.poster_path,
-            movie.title,
-            movie.release_date,
-            movie.overview,
-            movie.backdrop_path
-        )
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie)
         findNavController().navigate(action)
     }
 }

@@ -1,10 +1,12 @@
 package com.alepagani.codechallengemovies.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.domain.GetMovieLikedUseCase
 import com.alepagani.codechallengemovies.domain.GetMoviesUseCase
+import com.alepagani.codechallengemovies.domain.SaveMovieLikedUseCase
 import com.alepagani.codechallengeyape.core.ResultResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +34,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun getMovieList() {
+        Log.d("PASARAAAA EN EL VIEWMODEL", "PASOOO")
         viewModelScope.launch {
             getMoviesUseCase().catch { throwable ->
                 _moviesStateFlow.value = ResultResource.Failure(Exception(throwable.message))
@@ -45,15 +48,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getMovieLikedList() {
+    fun getMovieLikedList() {
         viewModelScope.launch {
             getMovieLikedUseCase().catch { throwable ->
-                _moviesStateFlow.value = ResultResource.Failure(Exception(throwable.message))
+                _moviesLikedStateFlow.value = ResultResource.Failure(Exception(throwable.message))
             }.collect { listMovies ->
                 if (!listMovies.isNullOrEmpty()) {
-                    _moviesStateFlow.value = ResultResource.Success(listMovies)
+                    _moviesLikedStateFlow.value = ResultResource.Success(listMovies)
                 } else {
-                    _moviesStateFlow.value = ResultResource.Failure(Exception("Not data"))
+                    _moviesLikedStateFlow.value = ResultResource.Failure(Exception("Not data"))
                 }
             }
         }

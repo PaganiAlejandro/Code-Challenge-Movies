@@ -20,5 +20,5 @@ data class MovieEntity(
     @ColumnInfo(name = "video") val video: Boolean = false,
     @ColumnInfo(name = "vote_average") val vote_average: Double = -1.0,
     @ColumnInfo(name = "vote_count") val vote_count: Int = 0,
-    @ColumnInfo(name = "is_liked") val is_liked: Boolean = false,
+    @ColumnInfo(name = "is_liked") var is_liked: Boolean = false,
 )

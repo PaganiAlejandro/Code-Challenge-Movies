@@ -1,9 +1,9 @@
 package com.alepagani.codechallengemovies.data.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Movie(
     val id: Int,
     val adult: Boolean,
@@ -19,5 +19,5 @@ data class Movie(
     val video: Boolean,
     val vote_average: Double,
     val vote_count: Int,
-    val is_liked: Boolean? = false
-)
+    var is_liked: Boolean? = false
+): Parcelable

@@ -2,15 +2,12 @@ package com.alepagani.codechallengemovies.data
 
 import android.util.Log
 import com.alepagani.codechallengemovies.data.local.LocalMovieDataSource
-import com.alepagani.codechallengemovies.data.local.MovieDao
 import com.alepagani.codechallengemovies.data.mapper.toMovieEntity
-import com.alepagani.codechallengemovies.data.mapper.toMovieEntityLiked
 import com.alepagani.codechallengemovies.data.mapper.toMovieList
 import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.data.remote.RemoteMovieDataSource
 import com.alepagani.codechallengemovies.data.remote.util.resultOf
 import com.alepagani.codechallengemovies.domain.Repository
-import com.alepagani.codechallengeyape.core.ResultResource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
@@ -40,7 +37,7 @@ class RepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveMovieLiked(movie: Movie) {
-        local.saveMovieLiked(movie.toMovieEntityLiked())
+        local.saveMovieLiked(movie.toMovieEntity())
     }
 
     private fun getMoviesFromApi(): Flow<List<Movie>> {
