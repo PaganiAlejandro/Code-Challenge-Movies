@@ -1,10 +1,12 @@
 package com.alepagani.codechallengemovies.data
 
-import android.util.Log
 import com.alepagani.codechallengemovies.data.local.LocalMovieDataSource
+import com.alepagani.codechallengemovies.data.mapper.toGenreEntity
 import com.alepagani.codechallengemovies.data.mapper.toMovieEntity
 import com.alepagani.codechallengemovies.data.mapper.toMovieList
+import com.alepagani.codechallengemovies.data.model.GenreList
 import com.alepagani.codechallengemovies.data.model.Movie
+import com.alepagani.codechallengemovies.data.model.MovieWithGenres
 import com.alepagani.codechallengemovies.data.remote.RemoteMovieDataSource
 import com.alepagani.codechallengemovies.data.remote.util.resultOf
 import com.alepagani.codechallengemovies.domain.Repository
@@ -19,10 +21,9 @@ class RepositoryImpl @Inject constructor(
     private val local: LocalMovieDataSource,
     private val remote: RemoteMovieDataSource
 ): Repository {
-    override fun getNowPlayingMovies(): Flow<List<Movie>> {
-        val localFlow = local.getAllMovies().map {
-            it.toMovieList()
-        }
+
+    override fun getNowPlayingMoviesWithGenres(): Flow<List<MovieWithGenres>> {
+        val localFlow = local.getAllMoviesWithGenre()
         val apiFlow = getMoviesFromApi()
 
         return localFlow.combine(apiFlow) {db, _ ->
@@ -44,7 +45,7 @@ class RepositoryImpl @Inject constructor(
         return flow {
             resultOf {
                 val movies = remote.getMovieList().results
-                Log.d("ALEPASO", movies.size.toString())
+                getGenreFromApi()
                 insertMovies(movies)
             }
             emit(emptyList<Movie>())
@@ -54,8 +55,22 @@ class RepositoryImpl @Inject constructor(
     }
 
     private suspend fun insertMovies(movies: List<Movie>) {
-        movies.forEach {
-            local.insertMovie(it.toMovieEntity())
+        movies.forEach { movie ->
+            local.insertMovie(movie.toMovieEntity())
+            movie.genre_ids.forEach { genre ->
+                local.insertMovieGenre(movie.id, genre)
+            }
+        }
+    }
+
+    private suspend fun getGenreFromApi() {
+        val genreList = remote.getGenreList()
+        insertGenre(genreList)
+    }
+
+    private suspend fun insertGenre(genreList: GenreList) {
+        genreList.genres.forEach {
+            local.insertGenre(it.toGenreEntity())
         }
     }
 }

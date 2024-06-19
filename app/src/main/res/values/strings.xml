@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Code Challenge Movies</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_title_home">Tv Show Reminder</string>
+    <string name="txt_overview">OVERVIEW</string>
+    <string name="txt_series_liked">SERIES QUE SIGO</string>
+    <string name="txt_now_playing">RECOMENDADAS</string>
+    <string name="txt_add">AGREGAR</string>
+    <string name="txt_added">AGREGADO</string>
+    <string name="default_hint">Buscar</string>
 </resources>

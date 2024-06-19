@@ -3,30 +3,29 @@ package com.alepagani.codechallengemovies.presentation.home
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.alepagani.codechallengemovies.R
+import com.alepagani.codechallengemovies.data.mapper.toMovie
 import com.alepagani.codechallengemovies.data.model.Movie
+import com.alepagani.codechallengemovies.data.model.MovieWithGenres
 import com.alepagani.codechallengemovies.databinding.FragmentHomeBinding
 import com.alepagani.codechallengemovies.presentation.home.adapter.MovieAdapter
 import com.alepagani.codechallengemovies.presentation.home.adapter.MovieLikedAdapter
 import com.alepagani.codechallengeyape.core.ResultResource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClickListener, MovieLikedAdapter.onMovieLikedClickListener {
 
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel by viewModels<HomeViewModel>()
+    private val viewModel by activityViewModels<HomeViewModel>()
     private lateinit var adapterMovies: MovieAdapter
     private lateinit var adapterMoviesLiked: MovieLikedAdapter
 
@@ -42,9 +41,13 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
         binding.rvMovies.adapter = adapterMovies
         binding.rvMoviesLiked.adapter = adapterMoviesLiked
 
-        viewLifecycleOwner.lifecycleScope.launch { 
+        binding.search.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchFragment())
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.moviesStateFlow.collect { result ->
+                viewModel.moviesWithGenreStateFlow.collect { result ->
                     when (result) {
                         is ResultResource.Failure -> {
                             Log.e("Error", "message: ${result.exception.message.toString()}")
@@ -69,25 +72,19 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
                         }
                         is ResultResource.Loading -> {}
                         is ResultResource.Success -> {
-                            if (result.data.size > 0){
-                                Log.e("ALEPASO", "Movies liked ")
-                                binding.movieLikedContainer.visibility = View.VISIBLE
-                            } else {
-                                Log.e("ALEPASO", "Movies liked error ")
-                                binding.movieLikedContainer.visibility = View.GONE
-                            }
+                            if (result.data.size > 0) binding.movieLikedContainer.visibility = View.VISIBLE else binding.movieLikedContainer.visibility = View.GONE
                             adapterMoviesLiked.updateList(result.data)
                         }
                     }
                 }
             }
         }
-        Log.e("ALEPASO", "paaaaaaaassssooooooooooooo ")
-        viewModel.getMovieLikedList()
+        viewModel.getMovieLists()
+
     }
 
-    override fun onMovieClick(movie: Movie) {
-        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie)
+    override fun onMovieClick(movie: MovieWithGenres) {
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie.movie.toMovie())
         findNavController().navigate(action)
     }
 
