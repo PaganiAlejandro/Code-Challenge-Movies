@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.data.model.MovieWithGenres
 import com.alepagani.codechallengemovies.databinding.MovieItemBinding
 import com.alepagani.codechallengeyape.core.BaseViewHolder
@@ -17,6 +16,7 @@ class MovieAdapter(
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     private var movies: List<MovieWithGenres> = movielist
+
     interface onMovieClickListener {
         fun onMovieClick(movie: MovieWithGenres)
     }
@@ -36,7 +36,7 @@ class MovieAdapter(
     override fun getItemCount() = movies.size
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
-        when(holder){
+        when (holder) {
             is MovieViewHolder -> holder.bind(movies[position])
         }
     }

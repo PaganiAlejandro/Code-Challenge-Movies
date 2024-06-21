@@ -1,6 +1,7 @@
 package com.alepagani.codechallengemovies.data.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.alepagani.codechallengemovies.core.AppConstant.BASE_URL
 import com.alepagani.codechallengemovies.data.RepositoryImpl
@@ -65,8 +66,8 @@ object AppModule {
     }
 
     @Provides
-    fun provideRepository(localMovieDataSource: LocalMovieDataSource, remoteMovieDataSource: RemoteMovieDataSource): Repository {
-        return RepositoryImpl(localMovieDataSource, remoteMovieDataSource)
+    fun provideRepository(localMovieDataSource: LocalMovieDataSource, remoteMovieDataSource: RemoteMovieDataSource, sharedPreferences: SharedPreferences): Repository {
+        return RepositoryImpl(localMovieDataSource, remoteMovieDataSource, sharedPreferences)
     }
 
     @Provides
@@ -77,5 +78,11 @@ object AppModule {
     @Provides
     fun provideRemoteDataSource(movieApi: MovieApi): RemoteMovieDataSource {
         return RemoteMovieDataSource(movieApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
     }
 }

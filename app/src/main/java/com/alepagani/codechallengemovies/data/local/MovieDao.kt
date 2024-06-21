@@ -38,6 +38,9 @@ interface MovieDao {
     suspend fun insertMovieGenreCrossRef(crossRef: MovieGenreCrossRef)
 
     @Transaction
-    @Query("SELECT * FROM movies")
+    @Query("SELECT * FROM movies order by vote_average DESC")
     fun getAllMovieWithGenres(): Flow<List<MovieWithGenres>>
+
+    @Query("SELECT * FROM genres WHERE genreId = :genreId")
+    suspend fun getGenreById(genreId: Int): GenreEntity
  }

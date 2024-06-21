@@ -2,14 +2,14 @@ package com.alepagani.codechallengemovies.presentation.home
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.alepagani.codechallengemovies.R
 import com.alepagani.codechallengemovies.data.mapper.toMovie
 import com.alepagani.codechallengemovies.data.model.Movie
@@ -17,6 +17,7 @@ import com.alepagani.codechallengemovies.data.model.MovieWithGenres
 import com.alepagani.codechallengemovies.databinding.FragmentHomeBinding
 import com.alepagani.codechallengemovies.presentation.home.adapter.MovieAdapter
 import com.alepagani.codechallengemovies.presentation.home.adapter.MovieLikedAdapter
+import com.alepagani.codechallengemovies.presentation.home.listener.PaginationScrollListener
 import com.alepagani.codechallengeyape.core.ResultResource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -40,6 +41,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
         adapterMoviesLiked = MovieLikedAdapter(emptyList(), this@HomeFragment)
         binding.rvMovies.adapter = adapterMovies
         binding.rvMoviesLiked.adapter = adapterMoviesLiked
+        addScrollListener()
 
         binding.search.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchFragment())
@@ -53,7 +55,7 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
                             Log.e("Error", "message: ${result.exception.message.toString()}")
                             binding.progresssBar.visibility = View.GONE
                         }
-                        is ResultResource.Loading ->  binding.progresssBar.visibility = View.VISIBLE
+                        is ResultResource.Loading -> binding.progresssBar.visibility = View.VISIBLE
                         is ResultResource.Success -> {
                             adapterMovies.updateList(result.data)
                             binding.progresssBar.visibility = View.GONE
@@ -72,15 +74,27 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
                         }
                         is ResultResource.Loading -> {}
                         is ResultResource.Success -> {
-                            if (result.data.size > 0) binding.movieLikedContainer.visibility = View.VISIBLE else binding.movieLikedContainer.visibility = View.GONE
+                            if (result.data.size > 0) binding.movieLikedContainer.visibility =
+                                View.VISIBLE else binding.movieLikedContainer.visibility = View.GONE
                             adapterMoviesLiked.updateList(result.data)
                         }
                     }
                 }
             }
         }
-        viewModel.getMovieLists()
+    }
 
+    private fun addScrollListener() {
+        binding.rvMovies.addOnScrollListener(object :
+            PaginationScrollListener(binding.rvMovies.layoutManager as LinearLayoutManager) {
+            override fun loadMoreItems() {
+                viewModel.getMovieWithGenreList()
+            }
+
+            override fun isLastPage() = viewModel.isAllMovieLoaded()
+
+            override fun isLoading() = viewModel.isLoadingMovies
+        })
     }
 
     override fun onMovieClick(movie: MovieWithGenres) {

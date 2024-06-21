@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class RemoteMovieDataSource @Inject constructor(private val movieApi: MovieApi) {
 
-    suspend fun getMovieList(): MovieResponse = movieApi.getNowPlayingMovies()
+    suspend fun getMovieList(page: Int): MovieResponse = movieApi.getNowPlayingMovies("es", page)
 
     suspend fun getGenreList(): GenreList = movieApi.getGenres()
 }

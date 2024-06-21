@@ -7,10 +7,8 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.alepagani.codechallengemovies.R
-import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.data.model.MovieWithGenres
 import com.alepagani.codechallengemovies.databinding.MovieItemSearchBinding
-import com.alepagani.codechallengemovies.presentation.home.HomeViewModel
 import com.alepagani.codechallengeyape.core.BaseViewHolder
 import com.bumptech.glide.Glide
 
@@ -40,7 +38,7 @@ class MovieSearchAdapter(
     override fun getItemCount() = movies.size
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
-        when(holder){
+        when (holder) {
             is MovieViewHolder -> holder.bind(movies[position])
         }
     }
@@ -62,16 +60,20 @@ class MovieSearchAdapter(
 
             binding.apply {
                 txtMovieName.setText(item.movie.title)
-                txtMovieGenre.setText(item.genres.first().name)
+                if (item.genres.size > 0) {
+                    item.genres.first()?.let {
+                        txtMovieGenre.setText(it.name)
+                    }
+                }
 
                 if (item.movie.is_liked == true) {
                     txtLiked.setText(R.string.txt_added)
                     txtLiked.setBackgroundResource(R.drawable.bg_liked_search)
-                    txtLiked.setTextColor(getColor(context,R.color.background))
+                    txtLiked.setTextColor(getColor(context, R.color.background))
                 } else {
                     txtLiked.setText(R.string.txt_add)
                     txtLiked.setBackgroundResource(R.drawable.bg_unliked_search)
-                    txtLiked.setTextColor(getColor(context,R.color.background_liked_search))
+                    txtLiked.setTextColor(getColor(context, R.color.background_liked_search))
                 }
             }
         }

@@ -35,7 +35,6 @@ fun Movie.toMovieEntity(): MovieEntity = MovieEntity(
     this.id,
     this.adult,
     this.backdrop_path,
-    //this.genre_ids,
     this.original_language,
     this.original_title,
     this.overview,
@@ -49,16 +48,7 @@ fun Movie.toMovieEntity(): MovieEntity = MovieEntity(
     this.is_liked ?: false
 )
 
-fun List<GenreEntity>.toListGenre(): List<Genre> = listOf(
-
-)
-
 fun Genre.toGenreEntity() : GenreEntity = GenreEntity(
     this.id,
-    this.name
-)
-
-fun GenreEntity.toGenre(): Genre = Genre(
-    this.genreId,
     this.name
 )

@@ -1,5 +1,8 @@
 package com.alepagani.codechallengemovies.data
 
+import android.content.SharedPreferences
+import android.util.Log
+import com.alepagani.codechallengemovies.core.AppConstant.LAST_PAGE_KEY
 import com.alepagani.codechallengemovies.data.local.LocalMovieDataSource
 import com.alepagani.codechallengemovies.data.mapper.toGenreEntity
 import com.alepagani.codechallengemovies.data.mapper.toMovieEntity
@@ -19,7 +22,8 @@ import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
     private val local: LocalMovieDataSource,
-    private val remote: RemoteMovieDataSource
+    private val remote: RemoteMovieDataSource,
+    private val sharedPreferences: SharedPreferences
 ): Repository {
 
     override fun getNowPlayingMoviesWithGenres(): Flow<List<MovieWithGenres>> {
@@ -44,7 +48,7 @@ class RepositoryImpl @Inject constructor(
     private fun getMoviesFromApi(): Flow<List<Movie>> {
         return flow {
             resultOf {
-                val movies = remote.getMovieList().results
+                val movies = remote.getMovieList(getNextPage()).results
                 getGenreFromApi()
                 insertMovies(movies)
             }
@@ -52,6 +56,12 @@ class RepositoryImpl @Inject constructor(
         }.onStart {
             emit(emptyList())
         }
+    }
+
+    private fun getNextPage(): Int {
+        val nextPage = sharedPreferences.getInt(LAST_PAGE_KEY, 0) + 1
+        sharedPreferences.edit().putInt(LAST_PAGE_KEY, nextPage).apply()
+        return nextPage
     }
 
     private suspend fun insertMovies(movies: List<Movie>) {

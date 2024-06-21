@@ -1,6 +1,5 @@
 package com.alepagani.codechallengemovies.presentation.detail
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,10 +11,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailViewModel @Inject constructor(private val saveMovieLikedUseCase: SaveMovieLikedUseCase): ViewModel() {
+class DetailViewModel @Inject constructor(private val saveMovieLikedUseCase: SaveMovieLikedUseCase) : ViewModel() {
 
     private lateinit var movieDetail: Movie
-    private var _isLiked= MutableLiveData(false)
+    private var _isLiked = MutableLiveData(false)
     val isLiked: LiveData<Boolean> = _isLiked
 
     fun setMovie(movie: Movie) {

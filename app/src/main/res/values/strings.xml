@@ -7,4 +7,6 @@
     <string name="txt_add">AGREGAR</string>
     <string name="txt_added">AGREGADO</string>
     <string name="default_hint">Buscar</string>
+    <string name="txt_subscribed">Suscripto</string>
+    <string name="txt_subscribe">Suscribirme</string>
 </resources>

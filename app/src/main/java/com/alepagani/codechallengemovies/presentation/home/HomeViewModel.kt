@@ -1,7 +1,9 @@
 package com.alepagani.codechallengemovies.presentation.home
 
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.alepagani.codechallengemovies.core.AppConstant.LAST_PAGE_KEY
 import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.data.model.MovieWithGenres
 import com.alepagani.codechallengemovies.domain.GetMovieLikedUseCase
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getMovieWithGenreUseCase: GetMovieWithGenreUseCase,
-    private val getMovieLikedUseCase: GetMovieLikedUseCase
+    private val getMovieLikedUseCase: GetMovieLikedUseCase,
+    private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
     private val _moviesWithGenreStateFlow = MutableStateFlow<ResultResource<List<MovieWithGenres>>>(ResultResource.Loading())
@@ -29,19 +32,21 @@ class HomeViewModel @Inject constructor(
 
     private val _movieSearchStateFlow = MutableStateFlow<ResultResource<List<MovieWithGenres>>>(ResultResource.Loading())
     val movieSearchStateFlow: StateFlow<ResultResource<List<MovieWithGenres>>> = _movieSearchStateFlow
-
     var allMoviesWithGenre: List<MovieWithGenres> = emptyList()
+    var isLoadingMovies = false
 
-    fun getMovieLists() {
+    init {
         getMovieWithGenreList()
         getMovieLikedList()
     }
 
-    private fun getMovieWithGenreList() {
+    fun getMovieWithGenreList() {
+        isLoadingMovies = true
         viewModelScope.launch {
             getMovieWithGenreUseCase().catch { throwable ->
                 _moviesWithGenreStateFlow.value = ResultResource.Failure(Exception(throwable.message))
             }.collect { listMovies ->
+                isLoadingMovies = false
                 if (!listMovies.isNullOrEmpty()) {
                     allMoviesWithGenre = listMovies
                     _moviesWithGenreStateFlow.value = ResultResource.Success(listMovies)
@@ -78,4 +83,6 @@ class HomeViewModel @Inject constructor(
             _movieSearchStateFlow.emit(ResultResource.Success(filteredList))
         }
     }
+
+    fun isAllMovieLoaded() = sharedPreferences.getInt(LAST_PAGE_KEY, 1) == 200
 }
