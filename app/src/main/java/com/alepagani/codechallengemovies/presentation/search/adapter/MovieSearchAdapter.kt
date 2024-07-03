@@ -7,20 +7,20 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.alepagani.codechallengemovies.R
-import com.alepagani.codechallengemovies.data.model.MovieWithGenres
+import com.alepagani.codechallengemovies.data.model.MovieGenre
 import com.alepagani.codechallengemovies.databinding.MovieItemSearchBinding
 import com.alepagani.codechallengeyape.core.BaseViewHolder
 import com.bumptech.glide.Glide
 
 class MovieSearchAdapter(
-    private val movielist: List<MovieWithGenres>,
+    private val movielist: List<MovieGenre>,
     private val itemClickListener: onMovieSearchClickListener
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
-    private var movies: List<MovieWithGenres> = movielist
+    private var movies: List<MovieGenre> = movielist
 
     interface onMovieSearchClickListener {
-        fun onMovieSearchClick(movie: MovieWithGenres)
+        fun onMovieSearchClick(movie: MovieGenre)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -43,7 +43,7 @@ class MovieSearchAdapter(
         }
     }
 
-    fun updateList(newList: List<MovieWithGenres>) {
+    fun updateList(newList: List<MovieGenre>) {
         movies = newList
         notifyDataSetChanged()
     }
@@ -51,22 +51,18 @@ class MovieSearchAdapter(
     private inner class MovieViewHolder(
         val binding: MovieItemSearchBinding,
         val context: Context
-    ) : BaseViewHolder<MovieWithGenres>(binding.root) {
-        override fun bind(item: MovieWithGenres) {
+    ) : BaseViewHolder<MovieGenre>(binding.root) {
+        override fun bind(item: MovieGenre) {
             Glide.with(context)
-                .load("https://image.tmdb.org/t/p/w500/${item.movie.poster_path}")
+                .load("https://image.tmdb.org/t/p/w500/${item.poster_path}")
                 .centerCrop()
                 .into(binding.imgMovie)
 
             binding.apply {
-                txtMovieName.setText(item.movie.title)
-                if (item.genres.size > 0) {
-                    item.genres.first()?.let {
-                        txtMovieGenre.setText(it.name)
-                    }
-                }
+                txtMovieName.setText(item.title)
+                txtMovieGenre.setText(item.genre)
 
-                if (item.movie.is_liked == true) {
+                if (item.is_liked == true) {
                     txtLiked.setText(R.string.txt_added)
                     txtLiked.setBackgroundResource(R.drawable.bg_liked_search)
                     txtLiked.setTextColor(getColor(context, R.color.background))

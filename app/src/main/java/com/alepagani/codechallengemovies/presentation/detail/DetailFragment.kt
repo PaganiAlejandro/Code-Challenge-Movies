@@ -7,7 +7,6 @@ import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.palette.graphics.Palette
@@ -15,7 +14,7 @@ import com.alepagani.codechallengemovies.R
 import com.alepagani.codechallengemovies.core.addTransparency
 import com.alepagani.codechallengemovies.core.getYearFromReleaseDate
 import com.alepagani.codechallengemovies.data.mapper.toMovie
-import com.alepagani.codechallengemovies.data.model.Movie
+import com.alepagani.codechallengemovies.data.model.MovieGenre
 import com.alepagani.codechallengemovies.databinding.FragmentDetailBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -43,12 +42,12 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         viewmodel.setMovie(args.movieArgument)
         viewmodel.movie.observe(viewLifecycleOwner, { movie ->
             binding.apply {
-                Glide.with(requireContext()).load("https://image.tmdb.org/t/p/w500/${movie.movie.backdrop_path}").centerCrop().into(imageBackground)
-                loadBackgrondImageAndGetColor(movie.movie.toMovie())
+                Glide.with(requireContext()).load("https://image.tmdb.org/t/p/w500/${movie.backdrop_path}").centerCrop().into(imageBackground)
+                loadBackgrondImageAndGetColor(movie)
 
-                textTitle.setText(movie.movie.title)
-                textYear.setText(movie.movie.release_date.getYearFromReleaseDate())
-                textOverview.setText(movie.movie.overview)
+                textTitle.setText(movie.title)
+                textYear.setText(movie.release_date.getYearFromReleaseDate())
+                textOverview.setText(movie.overview)
                 imageBack.setOnClickListener { findNavController().popBackStack() }
                 buttonAction.setOnClickListener {
                     viewmodel.saveMovieLiked()
@@ -62,9 +61,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         })
     }
 
-    private fun loadBackgrondImageAndGetColor(movie: Movie) {
+    private fun loadBackgrondImageAndGetColor(movieResponse: MovieGenre) {
         binding.apply {
-            Glide.with(requireContext()).load("https://image.tmdb.org/t/p/w500/${movie.poster_path}").centerCrop()
+            Glide.with(requireContext()).load("https://image.tmdb.org/t/p/w500/${movieResponse.poster_path}").centerCrop()
                 .transition(DrawableTransitionOptions.withCrossFade()).listener(object : RequestListener<Drawable> {
                     override fun onResourceReady(
                         resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean

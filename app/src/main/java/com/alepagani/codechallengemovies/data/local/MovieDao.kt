@@ -7,10 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.alepagani.codechallengemovies.data.local.entity.GenreEntity
 import com.alepagani.codechallengemovies.data.local.entity.MovieEntity
-import com.alepagani.codechallengemovies.data.local.entity.MovieGenreCrossRef
-import com.alepagani.codechallengemovies.data.model.MovieWithGenres
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -28,23 +25,10 @@ interface MovieDao {
     @Delete
     suspend fun deleteMovieLike(movie: MovieEntity)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertGenre(genre: GenreEntity)
-
-    @Query("SELECT * FROM genres")
-    fun getAllGenres(): List<GenreEntity>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMovieGenreCrossRef(crossRef: MovieGenreCrossRef)
-
-    @Transaction
     @Query("SELECT * FROM movies order by vote_average DESC")
-    fun getAllMovieWithGenres(): Flow<List<MovieWithGenres>>
-
-    @Query("SELECT * FROM genres WHERE genreId = :genreId")
-    suspend fun getGenreById(genreId: Int): GenreEntity
+    fun getAllMovieWithGenres(): Flow<List<MovieEntity>>
 
     @Transaction
     @Query("SELECT * FROM movies WHERE movieId = :id")
-    suspend fun getMovieById(id: Int): MovieWithGenres
+    suspend fun getMovieById(id: Int): MovieEntity
 }

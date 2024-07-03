@@ -10,8 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.alepagani.codechallengemovies.R
-import com.alepagani.codechallengemovies.data.mapper.toMovie
-import com.alepagani.codechallengemovies.data.model.MovieWithGenres
+import com.alepagani.codechallengemovies.data.model.MovieGenre
 import com.alepagani.codechallengemovies.databinding.FragmentSearchBinding
 import com.alepagani.codechallengemovies.presentation.home.HomeViewModel
 import com.alepagani.codechallengemovies.presentation.home.adapter.MovieSearchAdapter
@@ -58,8 +57,8 @@ class SearchFragment : Fragment(R.layout.fragment_search), MovieSearchAdapter.on
         }
     }
 
-    override fun onMovieSearchClick(movie: MovieWithGenres) {
-        val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(movie.movie.movieId)
+    override fun onMovieSearchClick(movie: MovieGenre) {
+        val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(movie.id)
         findNavController().navigate(action)
     }
 }

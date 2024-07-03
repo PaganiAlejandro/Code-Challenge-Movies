@@ -4,5 +4,5 @@ import javax.inject.Inject
 
 class GetMovieWithGenreUseCase @Inject constructor(private val repository: Repository) {
 
-    operator fun invoke() = repository.getNowPlayingMoviesWithGenres()
+    operator suspend fun invoke() = repository.getNowPlayingMoviesWithGenres()
 }

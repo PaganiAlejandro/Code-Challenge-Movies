@@ -9,6 +9,7 @@ data class MovieEntity(
     @PrimaryKey val movieId: Int,
     @ColumnInfo(name = "adult") val adult: Boolean,
     @ColumnInfo(name = "backdrop_path") val backdrop_path: String,
+    @ColumnInfo(name = "genre") val genre: String,
     @ColumnInfo(name = "original_language") val original_language: String = "",
     @ColumnInfo(name = "original_title") val original_title: String = "",
     @ColumnInfo(name = "overview") val overview: String = "",

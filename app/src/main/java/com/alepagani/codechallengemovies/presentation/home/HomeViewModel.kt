@@ -4,8 +4,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alepagani.codechallengemovies.core.AppConstant.LAST_PAGE_KEY
-import com.alepagani.codechallengemovies.data.model.Movie
-import com.alepagani.codechallengemovies.data.model.MovieWithGenres
+import com.alepagani.codechallengemovies.data.model.MovieGenre
 import com.alepagani.codechallengemovies.domain.GetMovieLikedUseCase
 import com.alepagani.codechallengemovies.domain.GetMovieWithGenreUseCase
 import com.alepagani.codechallengeyape.core.ResultResource
@@ -24,15 +23,15 @@ class HomeViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
-    private val _moviesWithGenreStateFlow = MutableStateFlow<ResultResource<List<MovieWithGenres>>>(ResultResource.Loading())
-    val moviesWithGenreStateFlow: StateFlow<ResultResource<List<MovieWithGenres>>> = _moviesWithGenreStateFlow
+    private val _moviesWithGenreStateFlow = MutableStateFlow<ResultResource<List<MovieGenre>>>(ResultResource.Loading())
+    val moviesWithGenreStateFlow: StateFlow<ResultResource<List<MovieGenre>>> = _moviesWithGenreStateFlow
 
-    private val _moviesLikedStateFlow = MutableStateFlow<ResultResource<List<Movie>>>(ResultResource.Loading())
-    val moviesLikedStateFlow: StateFlow<ResultResource<List<Movie>>> = _moviesLikedStateFlow
+    private val _moviesLikedStateFlow = MutableStateFlow<ResultResource<List<MovieGenre>>>(ResultResource.Loading())
+    val moviesLikedStateFlow: StateFlow<ResultResource<List<MovieGenre>>> = _moviesLikedStateFlow
 
-    private val _movieSearchStateFlow = MutableStateFlow<ResultResource<List<MovieWithGenres>>>(ResultResource.Loading())
-    val movieSearchStateFlow: StateFlow<ResultResource<List<MovieWithGenres>>> = _movieSearchStateFlow
-    var allMoviesWithGenre: List<MovieWithGenres> = emptyList()
+    private val _movieSearchStateFlow = MutableStateFlow<ResultResource<List<MovieGenre>>>(ResultResource.Loading())
+    val movieSearchStateFlow: StateFlow<ResultResource<List<MovieGenre>>> = _movieSearchStateFlow
+    var allMoviesWithGenre: List<MovieGenre> = emptyList()
     var isLoadingMovies = false
 
     init {
@@ -77,7 +76,7 @@ class HomeViewModel @Inject constructor(
                 allMoviesWithGenre
             } else {
                 allMoviesWithGenre.filter { movie ->
-                    movie.movie.title.contains(query, ignoreCase = true)
+                    movie.title.contains(query, ignoreCase = true)
                 }
             }
             _movieSearchStateFlow.emit(ResultResource.Success(filteredList))

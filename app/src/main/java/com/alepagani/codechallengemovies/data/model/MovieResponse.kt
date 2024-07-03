@@ -1,6 +1,6 @@
 package com.alepagani.codechallengemovies.data.model
 
-data class MovieResponse(
+data class MoviesResponse(
     val dates: Dates,
     val page: Int,
     val results: List<Movie>,

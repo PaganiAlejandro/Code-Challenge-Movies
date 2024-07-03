@@ -1,13 +1,10 @@
 package com.alepagani.codechallengemovies.data.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-data class Movie(
+data class MovieGenre(
     val id: Int,
     val adult: Boolean,
     val backdrop_path: String,
-    val genre_ids: List<Int>,
+    val genre: String,
     val original_language: String,
     val original_title: String,
     val overview: String,

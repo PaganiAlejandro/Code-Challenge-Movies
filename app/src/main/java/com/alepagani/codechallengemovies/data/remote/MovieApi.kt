@@ -2,7 +2,7 @@ package com.alepagani.codechallengemovies.data.remote
 
 import com.alepagani.codechallengemovies.BuildConfig
 import com.alepagani.codechallengemovies.data.model.GenreList
-import com.alepagani.codechallengemovies.data.model.MovieResponse
+import com.alepagani.codechallengemovies.data.model.MoviesResponse
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Query
@@ -14,7 +14,7 @@ interface MovieApi {
     suspend fun getNowPlayingMovies(
         @Query("language") language: String = "es",
         @Query("page") page: Int
-    ): MovieResponse
+    ): MoviesResponse
 
     @Headers("Authorization: ${BuildConfig.API_KEY}",
         "accept: application/json")

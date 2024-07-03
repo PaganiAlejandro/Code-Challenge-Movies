@@ -5,20 +5,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.alepagani.codechallengemovies.data.model.MovieWithGenres
+import com.alepagani.codechallengemovies.data.model.MovieGenre
 import com.alepagani.codechallengemovies.databinding.MovieItemBinding
 import com.alepagani.codechallengeyape.core.BaseViewHolder
 import com.bumptech.glide.Glide
 
 class MovieAdapter(
-    private val movielist: List<MovieWithGenres>,
+    private val movielist: List<MovieGenre>,
     private val itemClickListener: onMovieClickListener
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
-    private var movies: List<MovieWithGenres> = movielist
+    private var movies: List<MovieGenre> = movielist
 
     interface onMovieClickListener {
-        fun onMovieClick(movie: MovieWithGenres)
+        fun onMovieClick(movie: MovieGenre)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -41,7 +41,7 @@ class MovieAdapter(
         }
     }
 
-    fun updateList(newList: List<MovieWithGenres>) {
+    fun updateList(newList: List<MovieGenre>) {
         movies = newList
         notifyDataSetChanged()
     }
@@ -49,19 +49,15 @@ class MovieAdapter(
     private inner class MovieViewHolder(
         val binding: MovieItemBinding,
         val context: Context
-    ) : BaseViewHolder<MovieWithGenres>(binding.root) {
-        override fun bind(item: MovieWithGenres) {
+    ) : BaseViewHolder<MovieGenre>(binding.root) {
+        override fun bind(item: MovieGenre) {
             Glide.with(context)
-                .load("https://image.tmdb.org/t/p/w500/${item.movie.poster_path}")
+                .load("https://image.tmdb.org/t/p/w500/${item.poster_path}")
                 .centerCrop()
                 .into(binding.imgMovie)
             binding.apply {
-                txtMovieName.setText(item.movie.title)
-                if (item.genres.size > 0) {
-                    item.genres.first()?.let {
-                        txtMovieGenre.setText(it.name)
-                    }
-                }
+                txtMovieName.setText(item.title)
+                txtMovieGenre.setText(item.genre)
             }
         }
     }

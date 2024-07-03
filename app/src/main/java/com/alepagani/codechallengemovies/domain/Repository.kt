@@ -1,16 +1,15 @@
 package com.alepagani.codechallengemovies.domain
 
-import com.alepagani.codechallengemovies.data.model.Movie
-import com.alepagani.codechallengemovies.data.model.MovieWithGenres
+import com.alepagani.codechallengemovies.data.model.MovieGenre
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
-    fun getNowPlayingMoviesWithGenres(): Flow<List<MovieWithGenres>>
+    suspend fun getNowPlayingMoviesWithGenres(): Flow<List<MovieGenre>>
 
-    fun getMoviesLiked(): Flow<List<Movie>>
+    fun getMoviesLiked(): Flow<List<MovieGenre>>
 
-    suspend fun getMovie(id: Int): MovieWithGenres
+    suspend fun getMovie(id: Int): MovieGenre
 
-    suspend fun saveMovieLiked(movie: Movie)
+    suspend fun saveMovieLiked(movieResponse: MovieGenre)
 }

@@ -11,9 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alepagani.codechallengemovies.R
-import com.alepagani.codechallengemovies.data.mapper.toMovie
-import com.alepagani.codechallengemovies.data.model.Movie
-import com.alepagani.codechallengemovies.data.model.MovieWithGenres
+import com.alepagani.codechallengemovies.data.model.MovieGenre
 import com.alepagani.codechallengemovies.databinding.FragmentHomeBinding
 import com.alepagani.codechallengemovies.presentation.home.adapter.MovieAdapter
 import com.alepagani.codechallengemovies.presentation.home.adapter.MovieLikedAdapter
@@ -97,12 +95,12 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
         })
     }
 
-    override fun onMovieClick(movie: MovieWithGenres) {
-        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie.movie.movieId)
+    override fun onMovieClick(movie: MovieGenre) {
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie.id)
         findNavController().navigate(action)
     }
 
-    override fun onMovieLikedClick(movie: Movie) {
+    override fun onMovieLikedClick(movie: MovieGenre) {
         val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie.id)
         findNavController().navigate(action)
     }
