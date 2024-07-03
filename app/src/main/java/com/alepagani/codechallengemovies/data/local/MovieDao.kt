@@ -43,4 +43,8 @@ interface MovieDao {
 
     @Query("SELECT * FROM genres WHERE genreId = :genreId")
     suspend fun getGenreById(genreId: Int): GenreEntity
- }
+
+    @Transaction
+    @Query("SELECT * FROM movies WHERE movieId = :id")
+    suspend fun getMovieById(id: Int): MovieWithGenres
+}

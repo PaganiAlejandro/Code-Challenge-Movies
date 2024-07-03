@@ -7,12 +7,14 @@ import android.view.View
 import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.palette.graphics.Palette
 import com.alepagani.codechallengemovies.R
 import com.alepagani.codechallengemovies.core.addTransparency
 import com.alepagani.codechallengemovies.core.getYearFromReleaseDate
+import com.alepagani.codechallengemovies.data.mapper.toMovie
 import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.databinding.FragmentDetailBinding
 import com.bumptech.glide.Glide
@@ -38,26 +40,26 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     }
 
     private fun initUI() {
-        val movie = args.movieArgument
-        viewmodel.setMovie(movie)
+        viewmodel.setMovie(args.movieArgument)
+        viewmodel.movie.observe(viewLifecycleOwner, { movie ->
+            binding.apply {
+                Glide.with(requireContext()).load("https://image.tmdb.org/t/p/w500/${movie.movie.backdrop_path}").centerCrop().into(imageBackground)
+                loadBackgrondImageAndGetColor(movie.movie.toMovie())
 
-        binding.apply {
-            Glide.with(requireContext()).load("https://image.tmdb.org/t/p/w500/${movie.backdrop_path}").centerCrop().into(imageBackground)
-            loadBackgrondImageAndGetColor(movie)
-
-            textTitle.setText(movie.title)
-            textYear.setText(movie.release_date.getYearFromReleaseDate())
-            textOverview.setText(movie.overview)
-            imageBack.setOnClickListener { findNavController().popBackStack() }
-            buttonAction.setOnClickListener {
-                viewmodel.saveMovieLiked()
+                textTitle.setText(movie.movie.title)
+                textYear.setText(movie.movie.release_date.getYearFromReleaseDate())
+                textOverview.setText(movie.movie.overview)
+                imageBack.setOnClickListener { findNavController().popBackStack() }
+                buttonAction.setOnClickListener {
+                    viewmodel.saveMovieLiked()
+                }
+                viewmodel.isLiked.observe(viewLifecycleOwner, {
+                    buttonAction.setText(if (it) getString(R.string.txt_subscribed) else getString(R.string.txt_subscribe))
+                    buttonAction.setBackgroundResource(if (it) R.drawable.bg_button_detail else R.drawable.bg_button_subscribe)
+                    buttonAction.setTextColor(if (it) dominantColor else getColor(root.context, R.color.white))
+                })
             }
-            viewmodel.isLiked.observe(viewLifecycleOwner, {
-                buttonAction.setText(if (it) getString(R.string.txt_subscribed) else getString(R.string.txt_subscribe))
-                buttonAction.setBackgroundResource(if (it) R.drawable.bg_button_detail else R.drawable.bg_button_subscribe)
-                buttonAction.setTextColor(if (it) dominantColor else getColor(root.context, R.color.white))
-            })
-        }
+        })
     }
 
     private fun loadBackgrondImageAndGetColor(movie: Movie) {

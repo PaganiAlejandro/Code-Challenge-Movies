@@ -59,7 +59,7 @@ class SearchFragment : Fragment(R.layout.fragment_search), MovieSearchAdapter.on
     }
 
     override fun onMovieSearchClick(movie: MovieWithGenres) {
-        val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(movie.movie.toMovie())
+        val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(movie.movie.movieId)
         findNavController().navigate(action)
     }
 }

@@ -41,6 +41,10 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getMovie(id: Int): MovieWithGenres {
+        return local.getMovie(id)
+    }
+
     override suspend fun saveMovieLiked(movie: Movie) {
         local.saveMovieLiked(movie.toMovieEntity())
     }

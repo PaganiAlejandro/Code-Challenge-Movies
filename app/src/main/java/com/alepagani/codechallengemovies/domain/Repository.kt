@@ -10,5 +10,7 @@ interface Repository {
 
     fun getMoviesLiked(): Flow<List<Movie>>
 
+    suspend fun getMovie(id: Int): MovieWithGenres
+
     suspend fun saveMovieLiked(movie: Movie)
 }

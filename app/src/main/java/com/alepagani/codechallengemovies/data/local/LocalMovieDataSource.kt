@@ -31,5 +31,9 @@ class LocalMovieDataSource @Inject constructor(private val dao: MovieDao) {
     suspend fun insertMovieGenre(movieId: Int, genreId: Int) {
         dao.insertMovieGenreCrossRef(MovieGenreCrossRef(movieId, genreId))
     }
+
+    suspend fun getMovie(id: Int): MovieWithGenres {
+        return dao.getMovieById(id)
+    }
 }
 

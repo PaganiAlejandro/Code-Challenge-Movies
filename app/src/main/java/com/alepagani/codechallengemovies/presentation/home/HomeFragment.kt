@@ -98,12 +98,12 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
     }
 
     override fun onMovieClick(movie: MovieWithGenres) {
-        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie.movie.toMovie())
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie.movie.movieId)
         findNavController().navigate(action)
     }
 
     override fun onMovieLikedClick(movie: Movie) {
-        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie)
+        val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(movie.id)
         findNavController().navigate(action)
     }
 }

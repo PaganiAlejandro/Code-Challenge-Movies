@@ -26,7 +26,7 @@
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="movieArgument"
-            app:argType="com.alepagani.codechallengemovies.data.model.Movie" />
+            app:argType="integer" />
     </fragment>
 
     <fragment
