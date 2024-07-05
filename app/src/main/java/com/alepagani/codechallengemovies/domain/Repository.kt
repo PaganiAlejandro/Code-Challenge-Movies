@@ -9,6 +9,8 @@ interface Repository {
 
     fun getMoviesFromApi(): PagingSource<Int, Movie>
 
+    suspend fun getMovieFromApi(movieId: Int): Movie
+
     fun getMoviesLiked(): LiveData<List<Movie>>
 
     suspend fun saveMovieLiked(movie: Movie)

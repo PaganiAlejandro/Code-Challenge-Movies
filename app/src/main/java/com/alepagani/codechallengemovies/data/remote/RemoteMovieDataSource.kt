@@ -11,4 +11,6 @@ class RemoteMovieDataSource @Inject constructor(private val movieApi: MovieApi) 
     suspend fun getGenreList(): GenreList = movieApi.getGenres()
 
     suspend fun getMoviesSearch(query: String, page: Int): MoviesResponse = movieApi.searchMovies(query, page)
+
+    suspend fun getMovie(movieId: Int) = movieApi.getMovieDetails(movieId)
 }

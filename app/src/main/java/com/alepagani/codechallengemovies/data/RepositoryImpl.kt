@@ -28,9 +28,7 @@ class RepositoryImpl @Inject constructor(
             override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
                 val page = params?.key ?: STARTING_PAGE_INDEX
                 return try {
-                    Log.d("ALE PASO", "POR LLA,AR A;L SERVICIO")
                     val response = remote.getMovieList(page)
-                    Log.d("ALE PASO", "PASOOO SERVICIO")
                     LoadResult.Page(
                         data = response.results,
                         prevKey = if (page == 1) null else page - 1,
@@ -49,6 +47,8 @@ class RepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun getMovieFromApi(movieId: Int) = remote.getMovie(movieId)
 
     override fun getMoviesLiked() = local.getMoviesLiked().map { it.toMovieList() }
 
