@@ -13,8 +13,7 @@ import androidx.palette.graphics.Palette
 import com.alepagani.codechallengemovies.R
 import com.alepagani.codechallengemovies.core.addTransparency
 import com.alepagani.codechallengemovies.core.getYearFromReleaseDate
-import com.alepagani.codechallengemovies.data.mapper.toMovie
-import com.alepagani.codechallengemovies.data.model.MovieGenre
+import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.databinding.FragmentDetailBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -61,7 +60,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         })
     }
 
-    private fun loadBackgrondImageAndGetColor(movieResponse: MovieGenre) {
+    private fun loadBackgrondImageAndGetColor(movieResponse: Movie) {
         binding.apply {
             Glide.with(requireContext()).load("https://image.tmdb.org/t/p/w500/${movieResponse.poster_path}").centerCrop()
                 .transition(DrawableTransitionOptions.withCrossFade()).listener(object : RequestListener<Drawable> {

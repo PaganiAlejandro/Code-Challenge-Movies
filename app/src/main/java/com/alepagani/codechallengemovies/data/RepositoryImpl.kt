@@ -1,70 +1,67 @@
 package com.alepagani.codechallengemovies.data
 
-import android.content.SharedPreferences
-import com.alepagani.codechallengemovies.core.AppConstant.LAST_PAGE_KEY
+import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.alepagani.codechallengemovies.data.local.LocalMovieDataSource
-import com.alepagani.codechallengemovies.data.mapper.toMovie
 import com.alepagani.codechallengemovies.data.mapper.toMovieEntity
 import com.alepagani.codechallengemovies.data.mapper.toMovieList
 import com.alepagani.codechallengemovies.data.model.Movie
-import com.alepagani.codechallengemovies.data.model.MovieGenre
 import com.alepagani.codechallengemovies.data.remote.RemoteMovieDataSource
 import com.alepagani.codechallengemovies.domain.Repository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
     private val local: LocalMovieDataSource,
-    private val remote: RemoteMovieDataSource,
-    private val sharedPreferences: SharedPreferences
+    private val remote: RemoteMovieDataSource
 ): Repository {
 
-    private var hashGenres = HashMap<Int, String>()
 
-    override suspend fun getNowPlayingMoviesWithGenres(): Flow<List<MovieGenre>> {
-        val localFlow = local.getAllMoviesWithGenre()
-        getMoviesFromApi()
-        return localFlow.map { it.toMovieList() }
+    companion object{
+        const val STARTING_PAGE_INDEX = 1
     }
+    override fun getMoviesFromApi(): PagingSource<Int, Movie> {
+        return object : PagingSource<Int, Movie>() {
+            override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+                val page = params?.key ?: STARTING_PAGE_INDEX
+                return try {
+                    Log.d("ALE PASO", "POR LLA,AR A;L SERVICIO")
+                    val response = remote.getMovieList(page)
+                    Log.d("ALE PASO", "PASOOO SERVICIO")
+                    LoadResult.Page(
+                        data = response.results,
+                        prevKey = if (page == 1) null else page - 1,
+                        nextKey = if (response.results.isEmpty()) null else page + 1
+                    )
+                } catch (e: Exception) {
+                    LoadResult.Error(e)
+                }
+            }
 
-    override fun getMoviesLiked(): Flow<List<MovieGenre>> {
-        return local.getMoviesLiked().map {
-            it.toMovieList()
+            override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+                return state.anchorPosition?.let {
+                    val anchorPage = state?.closestPageToPosition(it)
+                    anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+                }
+            }
         }
     }
 
-    override suspend fun getMovie(id: Int): MovieGenre {
-        return local.getMovie(id).toMovie()
-    }
+    override fun getMoviesLiked() = local.getMoviesLiked().map { it.toMovieList() }
 
-    override suspend fun saveMovieLiked(movieResponse: MovieGenre) {
-        local.saveMovieLiked(movieResponse.toMovieEntity())
-    }
+    override suspend fun saveMovieLiked(movie: Movie) = local.saveMovieLiked(movie.toMovieEntity())
 
-    suspend private fun getMoviesFromApi() {
-        val movies = remote.getMovieList(getNextPage()).results
-        getGenreFromApi()
-        insertMovies(movies)
-    }
+    override suspend fun deleteMovieLiked(movie: Movie) = local.removeMovieLiked(movie.toMovieEntity())
 
-    private fun getNextPage(): Int {
-        val nextPage = sharedPreferences.getInt(LAST_PAGE_KEY, 0) + 1
-        sharedPreferences.edit().putInt(LAST_PAGE_KEY, nextPage).apply()
-        return nextPage
-    }
-
-    private suspend fun insertMovies(movies: List<Movie>) {
-        movies.forEach { movie ->
-            val genre = hashGenres.get(movie.genre_ids.first()) ?: ""
-            local.insertMovie(movie.toMovieEntity(genre))
-        }
-    }
-
-    private suspend fun getGenreFromApi() {
+    override suspend fun getGenreFromApi(): HashMap<Int, String> {
+        var hashGenres = HashMap<Int, String>()
         val genreList = remote.getGenreList()
         genreList.genres.forEach {
             hashGenres.put(it.id, it.name)
         }
+        return hashGenres
     }
 }

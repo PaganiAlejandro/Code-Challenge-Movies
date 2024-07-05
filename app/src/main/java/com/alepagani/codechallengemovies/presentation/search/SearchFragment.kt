@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.alepagani.codechallengemovies.R
-import com.alepagani.codechallengemovies.data.model.MovieGenre
+import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.databinding.FragmentSearchBinding
 import com.alepagani.codechallengemovies.presentation.home.HomeViewModel
 import com.alepagani.codechallengemovies.presentation.home.adapter.MovieSearchAdapter
@@ -39,13 +39,13 @@ class SearchFragment : Fragment(R.layout.fragment_search), MovieSearchAdapter.on
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.movieSearchStateFlow.collect { result ->
-                    when (result) {
-                        is ResultResource.Failure -> Log.e("Error", "message: ${result.exception.message.toString()}")
-                        is ResultResource.Loading -> {}
-                        is ResultResource.Success -> adapterMovies.updateList(result.data)
-                    }
-                }
+                // viewModel.movieSearchStateFlow.collect { result ->
+                //     when (result) {
+                //         is ResultResource.Failure -> Log.e("Error", "message: ${result.exception.message.toString()}")
+                //         is ResultResource.Loading -> {}
+                //         is ResultResource.Success -> adapterMovies.updateList(result.data)
+                //     }
+                // }
             }
         }
         viewModel.filterRecipes("")
@@ -57,7 +57,7 @@ class SearchFragment : Fragment(R.layout.fragment_search), MovieSearchAdapter.on
         }
     }
 
-    override fun onMovieSearchClick(movie: MovieGenre) {
+    override fun onMovieSearchClick(movie: Movie) {
         val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(movie.id)
         findNavController().navigate(action)
     }

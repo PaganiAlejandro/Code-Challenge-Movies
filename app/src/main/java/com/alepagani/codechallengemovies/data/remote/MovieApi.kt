@@ -10,14 +10,21 @@ import retrofit2.http.Query
 interface MovieApi {
 
     @Headers("Authorization: ${BuildConfig.API_KEY}", "accept: application/json")
-    @GET("movie/top_rated")
+    @GET("movie/now_playing")
     suspend fun getNowPlayingMovies(
         @Query("language") language: String = "es",
         @Query("page") page: Int
     ): MoviesResponse
 
-    @Headers("Authorization: ${BuildConfig.API_KEY}",
-        "accept: application/json")
+    @Headers(
+        "Authorization: ${BuildConfig.API_KEY}",
+        "accept: application/json"
+    )
     @GET("genre/movie/list")
     suspend fun getGenres(@Query("language") language: String = "en"): GenreList
+
+    @GET("search/movie")
+    suspend fun searchMovies(
+        @Query("query") query: String,
+        @Query("page") page: Int): MoviesResponse
 }

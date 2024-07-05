@@ -7,20 +7,20 @@ import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.alepagani.codechallengemovies.R
-import com.alepagani.codechallengemovies.data.model.MovieGenre
+import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.databinding.MovieItemSearchBinding
 import com.alepagani.codechallengeyape.core.BaseViewHolder
 import com.bumptech.glide.Glide
 
 class MovieSearchAdapter(
-    private val movielist: List<MovieGenre>,
+    private val movielist: List<Movie>,
     private val itemClickListener: onMovieSearchClickListener
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
-    private var movies: List<MovieGenre> = movielist
+    private var movies: List<Movie> = movielist
 
     interface onMovieSearchClickListener {
-        fun onMovieSearchClick(movie: MovieGenre)
+        fun onMovieSearchClick(movie: Movie)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -43,7 +43,7 @@ class MovieSearchAdapter(
         }
     }
 
-    fun updateList(newList: List<MovieGenre>) {
+    fun updateList(newList: List<Movie>) {
         movies = newList
         notifyDataSetChanged()
     }
@@ -51,8 +51,8 @@ class MovieSearchAdapter(
     private inner class MovieViewHolder(
         val binding: MovieItemSearchBinding,
         val context: Context
-    ) : BaseViewHolder<MovieGenre>(binding.root) {
-        override fun bind(item: MovieGenre) {
+    ) : BaseViewHolder<Movie>(binding.root) {
+        override fun bind(item: Movie) {
             Glide.with(context)
                 .load("https://image.tmdb.org/t/p/w500/${item.poster_path}")
                 .centerCrop()
@@ -60,7 +60,7 @@ class MovieSearchAdapter(
 
             binding.apply {
                 txtMovieName.setText(item.title)
-                txtMovieGenre.setText(item.genre)
+                //txtMovieGenre.setText(item.genre)
 
                 if (item.is_liked == true) {
                     txtLiked.setText(R.string.txt_added)

@@ -1,5 +1,6 @@
 package com.alepagani.codechallengemovies.data.local
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -13,22 +14,12 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MovieDao {
 
+    @Query("SELECT * FROM movies_favorites")
+    fun getFavoritesMovies(): LiveData<List<MovieEntity>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMovie(movie: MovieEntity)
 
-    @Query("SELECT * FROM movies where is_liked = 1")
-    fun getAllMoviesLiked(): Flow<List<MovieEntity>>
-
-    @Update
-    suspend fun saveMovieLike(movie: MovieEntity)
-
     @Delete
-    suspend fun deleteMovieLike(movie: MovieEntity)
-
-    @Query("SELECT * FROM movies order by vote_average DESC")
-    fun getAllMovieWithGenres(): Flow<List<MovieEntity>>
-
-    @Transaction
-    @Query("SELECT * FROM movies WHERE movieId = :id")
-    suspend fun getMovieById(id: Int): MovieEntity
+    suspend fun deleteMovieLiked(movie: MovieEntity)
 }

@@ -66,8 +66,8 @@ object AppModule {
     }
 
     @Provides
-    fun provideRepository(localMovieDataSource: LocalMovieDataSource, remoteMovieDataSource: RemoteMovieDataSource, sharedPreferences: SharedPreferences): Repository {
-        return RepositoryImpl(localMovieDataSource, remoteMovieDataSource, sharedPreferences)
+    fun provideRepository(localMovieDataSource: LocalMovieDataSource, remoteMovieDataSource: RemoteMovieDataSource): Repository {
+        return RepositoryImpl(localMovieDataSource, remoteMovieDataSource)
     }
 
     @Provides

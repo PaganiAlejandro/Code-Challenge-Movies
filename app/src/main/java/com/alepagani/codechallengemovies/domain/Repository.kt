@@ -1,15 +1,19 @@
 package com.alepagani.codechallengemovies.domain
 
-import com.alepagani.codechallengemovies.data.model.MovieGenre
+import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
+import com.alepagani.codechallengemovies.data.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
-    suspend fun getNowPlayingMoviesWithGenres(): Flow<List<MovieGenre>>
+    fun getMoviesFromApi(): PagingSource<Int, Movie>
 
-    fun getMoviesLiked(): Flow<List<MovieGenre>>
+    fun getMoviesLiked(): LiveData<List<Movie>>
 
-    suspend fun getMovie(id: Int): MovieGenre
+    suspend fun saveMovieLiked(movie: Movie)
 
-    suspend fun saveMovieLiked(movieResponse: MovieGenre)
+    suspend fun deleteMovieLiked(movie: Movie)
+
+    suspend fun getGenreFromApi(): HashMap<Int, String>
 }

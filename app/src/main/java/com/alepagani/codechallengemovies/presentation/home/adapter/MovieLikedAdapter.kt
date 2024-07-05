@@ -5,20 +5,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.alepagani.codechallengemovies.data.model.MovieGenre
+import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.databinding.MovieItemLikedBinding
 import com.alepagani.codechallengeyape.core.BaseViewHolder
 import com.bumptech.glide.Glide
 
 class MovieLikedAdapter(
-    private val movielist: List<MovieGenre>,
+    private val movielist: List<Movie>,
     private val itemClickListener: onMovieLikedClickListener
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
-    private var movieResponses: List<MovieGenre> = movielist
+    private var movieResponses: List<Movie> = movielist
 
     interface onMovieLikedClickListener {
-        fun onMovieLikedClick(movieResponse: MovieGenre)
+        fun onMovieLikedClick(movieResponse: Movie)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -41,7 +41,7 @@ class MovieLikedAdapter(
         }
     }
 
-    fun updateList(newList: List<MovieGenre>) {
+    fun updateList(newList: List<Movie>) {
         movieResponses = newList
         notifyDataSetChanged()
     }
@@ -49,8 +49,8 @@ class MovieLikedAdapter(
     private inner class MovieViewHolder(
         val binding: MovieItemLikedBinding,
         val context: Context
-    ) : BaseViewHolder<MovieGenre>(binding.root) {
-        override fun bind(item: MovieGenre) {
+    ) : BaseViewHolder<Movie>(binding.root) {
+        override fun bind(item: Movie) {
             Glide.with(context)
                 .load("https://image.tmdb.org/t/p/w500/${item.poster_path}")
                 .centerCrop()

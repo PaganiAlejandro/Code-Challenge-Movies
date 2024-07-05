@@ -2,21 +2,20 @@ package com.alepagani.codechallengemovies.data.mapper
 
 import com.alepagani.codechallengemovies.data.local.entity.MovieEntity
 import com.alepagani.codechallengemovies.data.model.Movie
-import com.alepagani.codechallengemovies.data.model.MovieGenre
 
-fun List<MovieEntity>.toMovieList(): List<MovieGenre> {
-    val resultList = mutableListOf<MovieGenre>()
+fun List<MovieEntity>.toMovieList(): List<Movie> {
+    val resultList = mutableListOf<Movie>()
     this.forEach {
         resultList.add(it.toMovie())
     }
     return resultList
 }
 
-fun MovieEntity.toMovie(): MovieGenre = MovieGenre(
+fun MovieEntity.toMovie(): Movie = Movie(
     this.movieId,
     this.adult,
     this.backdrop_path,
-    this.genre,
+    emptyList(),
     this.original_language,
     this.original_title,
     this.overview,
@@ -26,15 +25,13 @@ fun MovieEntity.toMovie(): MovieGenre = MovieGenre(
     this.title,
     this.video,
     this.vote_average,
-    this.vote_count,
-    this.is_liked
+    this.vote_count
 )
 
-fun MovieGenre.toMovieEntity(): MovieEntity = MovieEntity(
+fun Movie.toMovieEntity(): MovieEntity = MovieEntity(
     this.id,
     this.adult,
     this.backdrop_path,
-    this.genre,
     this.original_language,
     this.original_title,
     this.overview,
@@ -44,24 +41,5 @@ fun MovieGenre.toMovieEntity(): MovieEntity = MovieEntity(
     this.title,
     this.video,
     this.vote_average,
-    this.vote_count,
-    this.is_liked ?: false
-)
-
-fun Movie.toMovieEntity(genre: String): MovieEntity = MovieEntity(
-    this.id,
-    this.adult,
-    this.backdrop_path,
-    genre,
-    this.original_language,
-    this.original_title,
-    this.overview,
-    this.popularity,
-    this.poster_path,
-    this.release_date,
-    this.title,
-    this.video,
-    this.vote_average,
-    this.vote_count,
-    this.is_liked ?: false
+    this.vote_count
 )

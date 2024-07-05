@@ -1,28 +1,21 @@
 package com.alepagani.codechallengemovies.data.local
 
+import androidx.lifecycle.LiveData
 import com.alepagani.codechallengemovies.data.local.entity.MovieEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class LocalMovieDataSource @Inject constructor(private val dao: MovieDao) {
 
-    fun getAllMoviesWithGenre(): Flow<List<MovieEntity>> {
-        return dao.getAllMovieWithGenres()
+    fun getMoviesLiked(): LiveData<List<MovieEntity>> {
+        return dao.getFavoritesMovies()
     }
-
-    fun getMoviesLiked(): Flow<List<MovieEntity>> {
-        return dao.getAllMoviesLiked()
-    }
-    suspend fun insertMovie(movie: MovieEntity) {
+    suspend fun saveMovieLiked(movie: MovieEntity) {
         dao.insertMovie(movie)
     }
 
-    suspend fun saveMovieLiked(movie: MovieEntity) {
-        dao.saveMovieLike(movie)
-    }
-
-    suspend fun getMovie(id: Int): MovieEntity {
-        return dao.getMovieById(id)
+    suspend fun removeMovieLiked(movie: MovieEntity) {
+        dao.deleteMovieLiked(movie)
     }
 }
 

@@ -1,87 +1,71 @@
 package com.alepagani.codechallengemovies.presentation.home
 
 import android.content.SharedPreferences
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.filter
 import com.alepagani.codechallengemovies.core.AppConstant.LAST_PAGE_KEY
-import com.alepagani.codechallengemovies.data.model.MovieGenre
+import com.alepagani.codechallengemovies.data.model.Movie
+import com.alepagani.codechallengemovies.domain.DeleteMovieLikedUseCase
 import com.alepagani.codechallengemovies.domain.GetMovieLikedUseCase
-import com.alepagani.codechallengemovies.domain.GetMovieWithGenreUseCase
+import com.alepagani.codechallengemovies.domain.GetMoviesUseCase
+import com.alepagani.codechallengemovies.domain.SaveMovieLikedUseCase
+import com.alepagani.codechallengemovies.domain.getGenresUseCase
 import com.alepagani.codechallengeyape.core.ResultResource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import java.util.HashMap
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getMovieWithGenreUseCase: GetMovieWithGenreUseCase,
+    private val getMoviesUseCase: GetMoviesUseCase,
     private val getMovieLikedUseCase: GetMovieLikedUseCase,
-    private val sharedPreferences: SharedPreferences
+    private val saveMovieLikedUseCase: SaveMovieLikedUseCase,
+    private val deleteMovieLiked: DeleteMovieLikedUseCase,
+    private val getGenresUseCase: getGenresUseCase
 ) : ViewModel() {
 
-    private val _moviesWithGenreStateFlow = MutableStateFlow<ResultResource<List<MovieGenre>>>(ResultResource.Loading())
-    val moviesWithGenreStateFlow: StateFlow<ResultResource<List<MovieGenre>>> = _moviesWithGenreStateFlow
+    private lateinit var genres: HashMap<Int, String>
+    val popularMovies = getMoviesUseCase().cachedIn(viewModelScope)
 
-    private val _moviesLikedStateFlow = MutableStateFlow<ResultResource<List<MovieGenre>>>(ResultResource.Loading())
-    val moviesLikedStateFlow: StateFlow<ResultResource<List<MovieGenre>>> = _moviesLikedStateFlow
+    val moviesLiked: LiveData<List<Movie>> = getMovieLikedUseCase()
 
-    private val _movieSearchStateFlow = MutableStateFlow<ResultResource<List<MovieGenre>>>(ResultResource.Loading())
-    val movieSearchStateFlow: StateFlow<ResultResource<List<MovieGenre>>> = _movieSearchStateFlow
-    var allMoviesWithGenre: List<MovieGenre> = emptyList()
-    var isLoadingMovies = false
+    private var moviesFiltered: List<Movie> = emptyList()
 
     init {
-        getMovieWithGenreList()
-        getMovieLikedList()
-    }
-
-    fun getMovieWithGenreList() {
-        isLoadingMovies = true
         viewModelScope.launch {
-            getMovieWithGenreUseCase().catch { throwable ->
-                _moviesWithGenreStateFlow.value = ResultResource.Failure(Exception(throwable.message))
-            }.collect { listMovies ->
-                isLoadingMovies = false
-                if (!listMovies.isNullOrEmpty()) {
-                    allMoviesWithGenre = listMovies
-                    _moviesWithGenreStateFlow.value = ResultResource.Success(listMovies)
-                } else {
-                    _moviesWithGenreStateFlow.value = ResultResource.Failure(Exception("No data"))
-                }
-            }
+            genres = getGenresUseCase()
         }
     }
+    suspend fun saveMovieFavorite(movie: Movie) {
+        saveMovieLikedUseCase(movie)
+    }
 
-    private fun getMovieLikedList() {
-        viewModelScope.launch {
-            getMovieLikedUseCase().catch { throwable ->
-                _moviesLikedStateFlow.value = ResultResource.Failure(Exception(throwable.message))
-            }.collect { listMovies ->
-                if (!listMovies.isNullOrEmpty()) {
-                    _moviesLikedStateFlow.value = ResultResource.Success(listMovies)
-                } else {
-                    _moviesLikedStateFlow.value = ResultResource.Failure(Exception("Not data"))
-                }
-            }
-        }
+    suspend fun deleteMovieFavorite(movie: Movie) {
+        deleteMovieLiked(movie)
     }
 
     fun filterRecipes(query: String) {
         viewModelScope.launch {
             val filteredList = if (query.isEmpty()) {
-                allMoviesWithGenre
+                popularMovies.value
             } else {
-                allMoviesWithGenre.filter { movie ->
-                    movie.title.contains(query, ignoreCase = true)
+                popularMovies.value?.filter {
+                    it.title.contains(query, ignoreCase = true)
                 }
             }
-            _movieSearchStateFlow.emit(ResultResource.Success(filteredList))
         }
     }
-
-    fun isAllMovieLoaded() = sharedPreferences.getInt(LAST_PAGE_KEY, 1) == 200
 }

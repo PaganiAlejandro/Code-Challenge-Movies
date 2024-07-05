@@ -95,6 +95,9 @@ dependencies {
     //Palette
     implementation("androidx.palette:palette:1.0.0")
 
+    //Paging 3
+    implementation("androidx.paging:paging-runtime-ktx:3.3.0")
+
     //test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
