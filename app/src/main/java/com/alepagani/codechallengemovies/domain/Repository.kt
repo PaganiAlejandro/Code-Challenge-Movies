@@ -3,7 +3,6 @@ package com.alepagani.codechallengemovies.domain
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import com.alepagani.codechallengemovies.data.model.Movie
-import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 

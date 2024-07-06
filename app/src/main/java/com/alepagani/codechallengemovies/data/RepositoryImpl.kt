@@ -1,7 +1,5 @@
 package com.alepagani.codechallengemovies.data
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -11,7 +9,6 @@ import com.alepagani.codechallengemovies.data.mapper.toMovieList
 import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.data.remote.RemoteMovieDataSource
 import com.alepagani.codechallengemovies.domain.Repository
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(

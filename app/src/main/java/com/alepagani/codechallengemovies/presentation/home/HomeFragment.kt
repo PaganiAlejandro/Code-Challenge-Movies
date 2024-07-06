@@ -1,6 +1,7 @@
 package com.alepagani.codechallengemovies.presentation.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -40,34 +41,24 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
             findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSearchFragment())
         }
 
+        viewModel.genres.observe(viewLifecycleOwner, {
+            adapterMovies.updateGenres(it)
+            Log.d("ALE ADAPTER", "ACTUALIZO LA LISTA DESDE EL HOME")
+        })
+
         viewModel.popularMovies.observe(viewLifecycleOwner) {
             adapterMovies.submitData(lifecycle, it)
             binding.progresssBar.visibility = View.GONE
+            Log.d("ALE ADAPTER", "ACTUALIZO LAS PELICULAS DESDE EL HOME")
         }
 
-        // when (result) {
-        //     is ResultResource.Failure -> {
-        //         Log.e("Error", "message: ${result.exception.message.toString()}")
-        //         binding.progresssBar.visibility = View.GONE
-        //     }
-        //     is ResultResource.Loading -> binding.progresssBar.visibility = View.VISIBLE
-        //     is ResultResource.Success -> {
-        //         adapterMovies.updateList(result.data)
-        //         binding.progresssBar.visibility = View.GONE
-        //     }
-        // }
+        viewModel.moviesLiked.observe(viewLifecycleOwner, { result ->
+            if (result.size > 0) binding.movieLikedContainer.visibility =
+                View.VISIBLE else binding.movieLikedContainer.visibility = View.GONE
+            adapterMoviesLiked.updateList(result)
+            binding.movieLikedContainer.visibility = View.VISIBLE
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.moviesLiked.observe(viewLifecycleOwner, { result ->
-                    if (result.size > 0) binding.movieLikedContainer.visibility =
-                        View.VISIBLE else binding.movieLikedContainer.visibility = View.GONE
-                    adapterMoviesLiked.updateList(result)
-                    binding.movieLikedContainer.visibility = View.VISIBLE
-
-                })
-            }
-        }
+        })
     }
 
     override fun onMovieClick(movie: Movie) {

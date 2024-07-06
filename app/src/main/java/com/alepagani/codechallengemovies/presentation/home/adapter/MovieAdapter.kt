@@ -1,6 +1,7 @@
 package com.alepagani.codechallengemovies.presentation.home.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -14,7 +15,7 @@ class MovieAdapter(
     private val itemClickListener: onMovieClickListener
 ) : PagingDataAdapter<Movie, MovieAdapter.MovieViewHolder>(DIFF_UTILS) {
 
-    private lateinit var genres: HashMap<Int, String>
+    private var genres: HashMap<Int, String> = HashMap()
 
     companion object {
         val DIFF_UTILS = object : DiffUtil.ItemCallback<Movie>() {
@@ -48,8 +49,6 @@ class MovieAdapter(
         return holder
     }
 
-    //override fun getItemCount() = movies.size
-
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = getItem(position)
         movie?.let {
@@ -57,7 +56,8 @@ class MovieAdapter(
         }
     }
 
-    fun updateList(genresList: HashMap<Int, String>) {
+    fun updateGenres(genresList: HashMap<Int, String>) {
+        Log.d("ALE ADAPTER", "ACTUALIZO LA LISTA")
         genres = genresList
         notifyDataSetChanged()
     }
@@ -73,7 +73,12 @@ class MovieAdapter(
                 .into(binding.imgMovie)
             binding.apply {
                 txtMovieName.setText(item.title)
-                //txtMovieGenre.setText(genres.get(item.genre_ids.first()))
+
+                Log.d("ALE ADAPTER", "ADAPTER ${genres.toString()}")
+                Log.d("ALE ADAPTER", "ADAPTER ${ item.genre_ids.first()}")
+
+                    txtMovieGenre.setText(genres.get(item.genre_ids.first()))
+
             }
         }
     }
