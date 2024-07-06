@@ -17,4 +17,6 @@ interface Repository {
     suspend fun deleteMovieLiked(movie: Movie)
 
     suspend fun getGenreFromApi(): HashMap<Int, String>
+
+    fun searchMoviesPagingSource(query: String): PagingSource<Int, Movie>
 }

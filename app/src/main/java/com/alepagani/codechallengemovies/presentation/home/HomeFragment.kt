@@ -43,13 +43,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
 
         viewModel.genres.observe(viewLifecycleOwner, {
             adapterMovies.updateGenres(it)
-            Log.d("ALE ADAPTER", "ACTUALIZO LA LISTA DESDE EL HOME")
         })
 
         viewModel.popularMovies.observe(viewLifecycleOwner) {
             adapterMovies.submitData(lifecycle, it)
             binding.progresssBar.visibility = View.GONE
-            Log.d("ALE ADAPTER", "ACTUALIZO LAS PELICULAS DESDE EL HOME")
         }
 
         viewModel.moviesLiked.observe(viewLifecycleOwner, { result ->

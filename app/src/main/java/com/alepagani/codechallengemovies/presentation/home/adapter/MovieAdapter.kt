@@ -1,7 +1,6 @@
 package com.alepagani.codechallengemovies.presentation.home.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -57,7 +56,6 @@ class MovieAdapter(
     }
 
     fun updateGenres(genresList: HashMap<Int, String>) {
-        Log.d("ALE ADAPTER", "ACTUALIZO LA LISTA")
         genres = genresList
         notifyDataSetChanged()
     }
@@ -73,12 +71,7 @@ class MovieAdapter(
                 .into(binding.imgMovie)
             binding.apply {
                 txtMovieName.setText(item.title)
-
-                Log.d("ALE ADAPTER", "ADAPTER ${genres.toString()}")
-                Log.d("ALE ADAPTER", "ADAPTER ${ item.genre_ids.first()}")
-
-                    txtMovieGenre.setText(genres.get(item.genre_ids.first()))
-
+                txtMovieGenre.setText(genres.get(item.genre_ids.first()))
             }
         }
     }

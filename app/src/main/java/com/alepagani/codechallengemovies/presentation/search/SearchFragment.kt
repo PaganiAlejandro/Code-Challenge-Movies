@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SearchFragment : Fragment(R.layout.fragment_search), MovieSearchAdapter.onMovieSearchClickListener {
     private lateinit var binding: FragmentSearchBinding
-    private val viewModel by activityViewModels<HomeViewModel>()
+    private val viewModel: SearchViewModel by viewModels()
     private lateinit var adapterMovies: MovieSearchAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -31,28 +32,23 @@ class SearchFragment : Fragment(R.layout.fragment_search), MovieSearchAdapter.on
     }
 
     private fun initUI() {
-        adapterMovies = MovieSearchAdapter(emptyList(), this@SearchFragment)
+        adapterMovies = MovieSearchAdapter(this@SearchFragment)
         binding.rvMovies.adapter = adapterMovies
         binding.textCancel.setOnClickListener {
             findNavController().popBackStack()
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // viewModel.movieSearchStateFlow.collect { result ->
-                //     when (result) {
-                //         is ResultResource.Failure -> Log.e("Error", "message: ${result.exception.message.toString()}")
-                //         is ResultResource.Loading -> {}
-                //         is ResultResource.Success -> adapterMovies.updateList(result.data)
-                //     }
-                // }
-            }
+        viewModel.genres.observe(viewLifecycleOwner, {
+            adapterMovies.updateGenres(it)
+        })
+
+        viewModel.searchResults.observe(viewLifecycleOwner) {
+            adapterMovies.submitData(lifecycle, it)
         }
-        viewModel.filterRecipes("")
 
         lifecycleScope.launch {
             binding.searchEdit.textChanges.collect { query ->
-                viewModel.filterRecipes(query)
+                viewModel.setQuery(query)
             }
         }
     }

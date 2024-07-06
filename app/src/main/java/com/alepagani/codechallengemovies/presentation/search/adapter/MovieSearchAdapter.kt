@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColor
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.alepagani.codechallengemovies.R
@@ -13,42 +14,52 @@ import com.alepagani.codechallengeyape.core.BaseViewHolder
 import com.bumptech.glide.Glide
 
 class MovieSearchAdapter(
-    private val movielist: List<Movie>,
     private val itemClickListener: onMovieSearchClickListener
-) : RecyclerView.Adapter<BaseViewHolder<*>>() {
+) : PagingDataAdapter<Movie, MovieSearchAdapter.MovieViewHolder>(DIFF_UTILS) {
 
-    private var movies: List<Movie> = movielist
+    private var genres: HashMap<Int, String> = HashMap()
+
+    companion object {
+        val DIFF_UTILS = object : DiffUtil.ItemCallback<Movie>() {
+            override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
 
     interface onMovieSearchClickListener {
         fun onMovieSearchClick(movie: Movie)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val itemBinding = MovieItemSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val holder = MovieViewHolder(itemBinding, parent.context)
 
         itemBinding.root.setOnClickListener {
             val position = holder.adapterPosition.takeIf { it != DiffUtil.DiffResult.NO_POSITION }
                 ?: return@setOnClickListener
-            itemClickListener.onMovieSearchClick(movies[position])
+            getItem(position)?.let { it1 -> itemClickListener.onMovieSearchClick(it1) }
         }
         return holder
     }
 
-    override fun getItemCount() = movies.size
-
-    override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
-        when (holder) {
-            is MovieViewHolder -> holder.bind(movies[position])
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        val movie = getItem(position)
+        movie?.let {
+            holder.bind(it)
         }
     }
 
-    fun updateList(newList: List<Movie>) {
-        movies = newList
+    fun updateGenres(genresList: HashMap<Int, String>) {
+        genres = genresList
         notifyDataSetChanged()
     }
 
-    private inner class MovieViewHolder(
+    inner class MovieViewHolder(
         val binding: MovieItemSearchBinding,
         val context: Context
     ) : BaseViewHolder<Movie>(binding.root) {
@@ -60,7 +71,17 @@ class MovieSearchAdapter(
 
             binding.apply {
                 txtMovieName.setText(item.title)
-                //txtMovieGenre.setText(item.genre)
+                if (genres.size >= 1) {
+                    item.genre_ids?.let { list ->
+                        list.isNotEmpty().also {
+                            list.first()?.let { genreId ->
+                                genres.get(genreId)?.let {
+                                    txtMovieGenre.setText(it)
+                                }
+                            }
+                        }
+                    }
+                }
 
                 if (item.is_liked == true) {
                     txtLiked.setText(R.string.txt_added)
