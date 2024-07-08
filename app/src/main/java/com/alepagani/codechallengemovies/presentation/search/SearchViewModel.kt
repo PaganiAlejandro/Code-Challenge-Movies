@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.alepagani.codechallengemovies.data.model.Genre
 import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.domain.SearchMoviesUseCase
 import com.alepagani.codechallengemovies.domain.getGenresUseCase

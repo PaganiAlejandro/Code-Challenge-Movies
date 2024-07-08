@@ -9,6 +9,7 @@ import com.alepagani.codechallengemovies.data.mapper.toMovieList
 import com.alepagani.codechallengemovies.data.model.Movie
 import com.alepagani.codechallengemovies.data.remote.RemoteMovieDataSource
 import com.alepagani.codechallengemovies.domain.Repository
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(
@@ -75,6 +76,8 @@ class RepositoryImpl @Inject constructor(
     override fun getMoviesLiked() = local.getMoviesLiked().map { it.toMovieList() }
 
     override suspend fun saveMovieLiked(movie: Movie) = local.saveMovieLiked(movie.toMovieEntity())
+
+    override suspend fun isMovieLiked(movieId: Int) = local.isMovieLiked(movieId)
 
     override suspend fun deleteMovieLiked(movie: Movie) = local.removeMovieLiked(movie.toMovieEntity())
 

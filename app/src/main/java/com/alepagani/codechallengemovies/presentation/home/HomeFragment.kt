@@ -50,13 +50,16 @@ class HomeFragment : Fragment(R.layout.fragment_home), MovieAdapter.onMovieClick
             binding.progresssBar.visibility = View.GONE
         }
 
-        viewModel.moviesLiked.observe(viewLifecycleOwner, { result ->
-            if (result.size > 0) binding.movieLikedContainer.visibility =
-                View.VISIBLE else binding.movieLikedContainer.visibility = View.GONE
-            adapterMoviesLiked.updateList(result)
-            binding.movieLikedContainer.visibility = View.VISIBLE
-
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.moviesLiked.collect { result ->
+                    if (result.size > 0) binding.movieLikedContainer.visibility =
+                        View.VISIBLE else binding.movieLikedContainer.visibility = View.GONE
+                    adapterMoviesLiked.updateList(result)
+                    binding.movieLikedContainer.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 
     override fun onMovieClick(movie: Movie) {

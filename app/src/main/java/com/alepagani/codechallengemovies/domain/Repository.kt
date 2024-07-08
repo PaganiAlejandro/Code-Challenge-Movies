@@ -3,6 +3,7 @@ package com.alepagani.codechallengemovies.domain
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import com.alepagani.codechallengemovies.data.model.Movie
+import kotlinx.coroutines.flow.Flow
 
 interface Repository {
 
@@ -10,7 +11,9 @@ interface Repository {
 
     suspend fun getMovieFromApi(movieId: Int): Movie
 
-    fun getMoviesLiked(): LiveData<List<Movie>>
+    fun getMoviesLiked(): Flow<List<Movie>>
+
+    suspend fun isMovieLiked(movieId: Int): Boolean
 
     suspend fun saveMovieLiked(movie: Movie)
 

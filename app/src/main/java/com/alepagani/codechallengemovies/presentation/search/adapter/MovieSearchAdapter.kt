@@ -73,7 +73,7 @@ class MovieSearchAdapter(
                 txtMovieName.setText(item.title)
                 if (genres.size >= 1) {
                     item.genre_ids?.let { list ->
-                        list.isNotEmpty().also {
+                        list.isNotEmpty()?.also {
                             list.first()?.let { genreId ->
                                 genres.get(genreId)?.let {
                                     txtMovieGenre.setText(it)
