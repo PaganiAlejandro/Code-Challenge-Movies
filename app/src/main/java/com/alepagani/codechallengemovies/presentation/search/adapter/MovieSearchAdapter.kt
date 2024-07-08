@@ -1,6 +1,7 @@
 package com.alepagani.codechallengemovies.presentation.home.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getColor
@@ -72,15 +73,17 @@ class MovieSearchAdapter(
             binding.apply {
                 txtMovieName.setText(item.title)
                 if (genres.size >= 1) {
-                    item.genre_ids?.let { list ->
-                        list.isNotEmpty()?.also {
-                            list.first()?.let { genreId ->
-                                genres.get(genreId)?.let {
-                                    txtMovieGenre.setText(it)
-                                }
+                    if (item.genre_ids.isNotEmpty()) {
+                        item.genre_ids.first()?.let { genreId ->
+                            genres.get(genreId)?.let {
+                                txtMovieGenre.setText(it)
                             }
-                        }
+                        } ?: txtMovieGenre.setText("")
+                    } else {
+                        txtMovieGenre.setText("")
                     }
+                } else {
+                    txtMovieGenre.setText("")
                 }
 
                 if (item.is_liked == true) {
