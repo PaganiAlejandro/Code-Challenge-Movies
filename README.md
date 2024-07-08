@@ -1,7 +1,20 @@
-# Code Challenge Brubank – Mobile Developer
+# Code Challenge – Mobile Developer
 
 ## Introducción
 Este proyecto fue desarrollado como parte de un code challenge para una posición de desarrollador Android.
+
+
+## Consigna
+El ejercicio consiste en listar series de TV o películas utilizando The Movie DB API. Buscamos replicar la manera en la que trabajamos como desarrolladores dia a dia. Partimos de funcionalidades esperadas y de un diseño en el cual tenemos que tomar una serie de decisiones: qué arquitectura voy a usar, si necesito algunas librerías, si todas las funcionalidades son importantes y por qué, en qué orden voy a desarrollarlas, etc. Esperamos que tomes decisiones que te hagan priorizar las funcionalidades para mostrar tus cualidades técnicas de la mejor manera.
+
+Funcionalidades esperadas:
+- Pantalla principal (listado).
+- Vista del detall.
+- Obtener el género desde la API para mostrarlo en cada ítem del listado.
+- Suscribirse a una serie (localmente).
+- Implementar search para hacer el home dinámico.
+- Paginación.
+
 
 ## Arquitectura y Patrones Utilizados
 Para asegurar un desarrollo estructurado y mantenible, se implementó Clean Architecture junto con el patrón MVVM (Model-View-ViewModel). 
@@ -19,12 +32,27 @@ En el viewmodel se emite en un unico StateFlow el resultado de la lista completa
 
 ## Tecnologías y Bibliotecas Clave
 **Retrofit:** Biblioteca de cliente HTTP para comunicarse con la API de recetas.
+
 **Hilt:** Biblioteca recomendada por Google para la inyección de dependencias en Android.
+
 **Navigation Component:** Utilizado para la navegación entre las tres pantallas principales de la aplicación.
+
 **Coroutines:** Para el manejo de operaciones asincrónicas de manera sencilla y eficiente.
+
 **Flow y StateFlow:** Parte de la API de Kotlin Coroutines que facilita la programación reactiva. Flow es una construcción para emitir valores de manera asincrónica y continuamente, mientras que StateFlow es un contenedor de flujo de datos con un valor que puede ser observado y actualizado de manera reactiva.
+
+**Room:**  Se utiliza Room para almacenar las peliculas favoritas
+
+**Paging 3:**  Se utiliza Room para almacenar las peliculas favoritas
 
 ## La aplicacion consta de 3 fragments
 Home Screen: Lista de peliculas y lista de subscripciones.
+
 Detail Screen: Detalles de la pelicula seleccionada.
+
 Search Screen: Lista todas las peliculas y se puede filtar por medio del nombre de la misma.
+
+# BRANCHS
+ - master: En este branch esta una de las posibles soluciones. Toda las peliculas que se muestran previemente fueron almacenadas en la base de datos, cada una con su lista de generos. Para ello se tuvo que implementar una relacion entre entidades. El paginado es con un listener en el Recycler. Por ende, el filtrado de peliculas en el fragmente search, se hace localmente.
+ - paging_v3: En este caso se utiliza Paging v3, solo se almacena las peliculas favoritas. El search se hace mediante llamados a la api.
+
