@@ -1,4 +1,4 @@
-# Code Challenge Brubank – Mobile Developer
+# Code Challenge – Mobile Developer
 
 ## Introducción
 Este proyecto fue desarrollado como parte de un code challenge para una posición de desarrollador Android.
