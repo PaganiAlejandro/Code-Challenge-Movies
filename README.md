@@ -43,10 +43,16 @@ En el viewmodel se emite en un unico StateFlow el resultado de la lista completa
 
 **Room:**  Se utiliza Room para almacenar las peliculas favoritas
 
+**Paging 3:**  Se utiliza Room para almacenar las peliculas favoritas
+
 ## La aplicacion consta de 3 fragments
 Home Screen: Lista de peliculas y lista de subscripciones.
 
 Detail Screen: Detalles de la pelicula seleccionada.
 
 Search Screen: Lista todas las peliculas y se puede filtar por medio del nombre de la misma.
+
+# BRANCHS
+ - master: En este branch esta una de las posibles soluciones. Toda las peliculas que se muestran previemente fueron almacenadas en la base de datos, cada una con su lista de generos. Para ello se tuvo que implementar una relacion entre entidades. El paginado es con un listener en el Recycler. Por ende, el filtrado de peliculas en el fragmente search, se hace localmente.
+ - paging_v3: En este caso se utiliza Paging v3, solo se almacena las peliculas favoritas. El search se hace mediante llamados a la api.
 
